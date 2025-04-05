@@ -4,9 +4,9 @@ from app.core.utils import hash_password
 from .models import *
 
 def db_create_user_account(user_data:UsersCreate):
-    hashed_password = hash_password(user_data.password)
+    password_hash = hash_password(user_data.password)
     with session:
-        extra_data = {"hashed_password": hashed_password}
+        extra_data = {"password_hash": password_hash}
         db_user = Users.model_validate(user_data,update=extra_data)
         session.add(db_user)
         session.commit()

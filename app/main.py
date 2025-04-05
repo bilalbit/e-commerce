@@ -2,9 +2,12 @@ import uvicorn
 from fastapi import FastAPI
 
 from app.core.config import setting_dep
+from app.core.routes import api_router
 from app.database import create_db_and_tables
 
 app = FastAPI()
+
+app.include_router(api_router)
 
 
 

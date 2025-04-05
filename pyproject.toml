@@ -6,7 +6,9 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115.12",
+    "phonenumbers>=9.0.2",
     "psycopg2>=2.9.10",
+    "pydantic-extra-types>=2.10.3",
     "pydantic-settings>=2.8.1",
     "sqlmodel>=0.0.24",
 ]

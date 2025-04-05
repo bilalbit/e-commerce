@@ -12,10 +12,10 @@ class RoleType(Enum):
     admin = "ADMIN"
 
 class UsersBase(TimeStampMixin):
-    email: EmailStr = Field(index=True)
+    email: EmailStr = Field(index=True,unique=True)
     first_name: str = Field(min_length=3)
     last_name: str = Field(min_length=3)
-    phone_number: EthiopianPhoneNumber = Field(index=True)
+    phone_number: EthiopianPhoneNumber = Field(index=True,unique=True)
     role: RoleType
     is_active: bool = Field(default=True)
 

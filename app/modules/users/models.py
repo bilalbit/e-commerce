@@ -1,21 +1,27 @@
 import uuid
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from pydantic import EmailStr
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 
 from app.core.models import TimeStampMixin, EthiopianPhoneNumber
+
+if TYPE_CHECKING:
+    from app.modules.customers.models import Customers
+
 
 class RoleType(Enum):
     customer = "CUSTOMER"
     seller = "SELLER"
     admin = "ADMIN"
 
+
 class UsersBase(TimeStampMixin):
-    email: EmailStr = Field(index=True,unique=True)
+    email: EmailStr = Field(index=True, unique=True)
     first_name: str = Field(min_length=3)
     last_name: str = Field(min_length=3)
-    phone_number: EthiopianPhoneNumber = Field(index=True,unique=True)
+    phone_number: EthiopianPhoneNumber = Field(index=True, unique=True)
     role: RoleType
     is_active: bool = Field(default=True)
 
@@ -23,6 +29,8 @@ class UsersBase(TimeStampMixin):
 class Users(UsersBase, table=True):
     id: uuid.UUID | None = Field(primary_key=True, index=True, default_factory=uuid.uuid4)
     password_hash: str
+
+    customer: "Customers" = Relationship(back_populates="user")
 
 
 class UsersCreate(UsersBase):

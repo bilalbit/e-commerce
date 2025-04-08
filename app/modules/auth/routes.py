@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException,status
 
 from app.database import session
 from app.modules.sellers.models import Sellers, SellersCreate
@@ -14,6 +14,8 @@ router = APIRouter(
 
 @router.post('/register/{role}')
 def register(role: RoleType,user_data:UsersCreate,customer_data:CustomersCreate | None = None,seller_data: SellersCreate | None = None):
+    if customer_data is not None and seller_data is not None:
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail="only one account can be created at a time either as a seller or customer.")
     with session:
         db_user = db_create_user_account(user_data)
         if role is RoleType.customer:
@@ -31,4 +33,4 @@ def register(role: RoleType,user_data:UsersCreate,customer_data:CustomersCreate 
             session.refresh(db_user)
             return db_user
         else:
-            return RoleType.admin
+            return db_user

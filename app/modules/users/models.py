@@ -19,6 +19,7 @@ class RoleType(Enum):
 
 
 class UsersBase(TimeStampMixin):
+    username: str = Field(min_length=3)
     email: EmailStr = Field(index=True, unique=True)
     first_name: str = Field(min_length=3)
     last_name: str = Field(min_length=3)
@@ -41,11 +42,13 @@ class UsersCreate(UsersBase):
 class UsersPublic(SQLModel):
     first_name: str
     last_name: str
+    username:str
     email: EmailStr
     phone_number: EthiopianPhoneNumber
 
 
 class UsersUpdate(UsersBase):
+    username: str | None = None
     email: EmailStr | None = None
     password_hash: str | None = None
     first_name: str | None = None

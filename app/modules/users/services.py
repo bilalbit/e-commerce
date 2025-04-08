@@ -3,10 +3,10 @@ from app.database import session
 from .models import *
 
 
-def db_create_user_account(user_data: UsersCreate):
+def db_create_user_account(user_data: UsersCreate,role:RoleType):
     password_hash = hash_password(user_data.password)
     with session:
-        extra_data = {"password_hash": password_hash}
+        extra_data = {"password_hash": password_hash,"role": role}
         db_user = Users.model_validate(user_data, update=extra_data)
         session.add(db_user)
         session.commit()

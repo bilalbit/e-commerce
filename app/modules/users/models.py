@@ -24,13 +24,14 @@ class UsersBase(TimeStampMixin):
     first_name: str = Field(min_length=3)
     last_name: str = Field(min_length=3)
     phone_number: EthiopianPhoneNumber = Field(index=True, unique=True)
-    role: RoleType
     is_active: bool = Field(default=True)
 
 
 class Users(UsersBase, table=True):
     id: uuid.UUID | None = Field(primary_key=True, index=True, default_factory=uuid.uuid4)
     password_hash: str
+    role: RoleType
+
 
     customer: "Customers" = Relationship(back_populates="user")
     seller: "Sellers" = Relationship(back_populates="user")

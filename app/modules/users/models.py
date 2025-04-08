@@ -9,12 +9,13 @@ from app.core.models import TimeStampMixin, EthiopianPhoneNumber
 
 if TYPE_CHECKING:
     from app.modules.customers.models import Customers
+    from app.modules import Sellers
 
 
 class RoleType(Enum):
-    customer = "CUSTOMER"
-    seller = "SELLER"
-    admin = "ADMIN"
+    customer = "customer"
+    seller = "seller"
+    admin = "admin"
 
 
 class UsersBase(TimeStampMixin):
@@ -31,7 +32,7 @@ class Users(UsersBase, table=True):
     password_hash: str
 
     customer: "Customers" = Relationship(back_populates="user")
-
+    seller: "Sellers" = Relationship(back_populates="user")
 
 class UsersCreate(UsersBase):
     password: str = Field(min_length=8)

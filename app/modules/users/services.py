@@ -14,9 +14,9 @@ def db_create_user_account(user_data: UsersCreate,role:RoleType):
         return db_user
 
 
-def db_get_user_by_email(email: str):
+def db_get_user_by_username(username: str):
     with session:
-        return session.query(Users).where(Users.email == email).one()
+        return session.query(Users).where(Users.username == username).one()
 
 
 def db_get_user_by_phone(phone_number: str):

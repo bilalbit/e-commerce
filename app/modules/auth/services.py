@@ -6,11 +6,13 @@ from fastapi import Depends, HTTPException,status
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from jwt import InvalidTokenError
 
-from app.modules.users.services import db_get_user_by_username
+from app.modules.users.services import db_get_user_by_username, db_create_user_account
 from .models import *
 
 from app.core.utils import verify_password
 from app.core.config import get_settings
+from .. import Customers, Sellers
+from ...database import session
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
@@ -41,7 +43,7 @@ def verify_token(token: token_dependency):
     try:
         payload = jwt.decode(token, get_settings().secret_key, algorithms=[get_settings().algorithm])
         username: str = payload.get("username")
-        id: int = payload.get("id")
+        id: str = payload.get("id")
         role: str = str(payload.get("role"))
         if username is None or id is None or role is None:
             return False
@@ -52,3 +54,22 @@ def verify_token(token: token_dependency):
         "id": id,
         "role": role
     }
+
+def db_create_customer_account(customer_data, role, user_data):
+    with session:
+        db_user = db_create_user_account(user_data, role)
+        db_customer = Customers.model_validate(customer_data)
+        db_user.customer = db_customer
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+        return db_user
+def db_create_seller_account(role, seller_data, user_data):
+    with session:
+        db_user = db_create_user_account(user_data, role)
+        db_seller = Sellers.model_validate(seller_data)
+        db_user.seller = db_seller
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+        return db_user

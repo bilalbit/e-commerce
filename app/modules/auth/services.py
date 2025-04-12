@@ -1,4 +1,3 @@
-from contextvars import ContextVar
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 
@@ -7,15 +6,15 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt import InvalidTokenError
 
+from app.core.config import get_settings
+from app.core.utils import verify_password
 from app.modules.users.services import db_get_user_by_username, db_create_user_account
 from .models import *
+from app.modules.customers.models import Customers
+from app.modules.sellers.models import Sellers
 
-from app.core.utils import verify_password
-from app.core.config import get_settings
-from .. import Customers, Sellers
 from ...database import session
 
-current_user_context: ContextVar[dict | None] = ContextVar("current_user_context", default=None)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 token_dependency = Annotated[str, Depends(oauth2_scheme)]
@@ -88,14 +87,4 @@ def db_create_seller_account(role, seller_data, user_data):
         return db_user
 
 
-async def get_current_user(token: token_dependency):
-    user = verify_token(token)
-    current_user_context.set(
-        {
-            "username": user["username"],
-            "user_id": user["id"],
-            "role": user["role"]
-        }
-    )
-def get_current_user_context() -> dict | None:
-    return current_user_context.get()
+

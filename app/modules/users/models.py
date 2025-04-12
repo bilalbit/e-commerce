@@ -5,21 +5,15 @@ from typing import TYPE_CHECKING
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel, Relationship
 
-from app.core.models import TimeStampMixin, EthiopianPhoneNumber
+from app.core.models import TimeStampMixin, EthiopianPhoneNumber, RoleType
 
 if TYPE_CHECKING:
     from app.modules.customers.models import Customers
     from app.modules import Sellers
 
 
-class RoleType(Enum):
-    customer = "customer"
-    seller = "seller"
-    admin = "admin"
-
-
 class UsersBase(TimeStampMixin):
-    username: str = Field(min_length=3)
+    username: str = Field(min_length=3, index=True, unique=True)
     email: EmailStr = Field(index=True, unique=True)
     first_name: str = Field(min_length=3)
     last_name: str = Field(min_length=3)
@@ -32,9 +26,9 @@ class Users(UsersBase, table=True):
     password_hash: str
     role: RoleType
 
-
     customer: "Customers" = Relationship(back_populates="user")
     seller: "Sellers" = Relationship(back_populates="user")
+
 
 class UsersCreate(UsersBase):
     password: str = Field(min_length=8)
@@ -43,7 +37,7 @@ class UsersCreate(UsersBase):
 class UsersPublic(SQLModel):
     first_name: str
     last_name: str
-    username:str
+    username: str
     email: EmailStr
     phone_number: EthiopianPhoneNumber
 
@@ -51,7 +45,7 @@ class UsersPublic(SQLModel):
 class UsersUpdate(UsersBase):
     username: str | None = None
     email: EmailStr | None = None
-    password_hash: str | None = None
+    password: str | None = Field(default=None, min_length=8)
     first_name: str | None = None
     last_name: str | None = None
     phone_number: EthiopianPhoneNumber | None = None

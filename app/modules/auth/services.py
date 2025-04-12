@@ -1,4 +1,3 @@
-from datetime import timedelta, datetime, timezone
 from typing import Annotated
 
 import jwt
@@ -7,18 +6,33 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt import InvalidTokenError
 
 from app.core.config import get_settings
-from app.core.utils import verify_password
-from app.modules.users.services import db_get_user_by_username, db_create_user_account
-from .models import *
+from app.core.utils import verify_password, hash_password
+from app.database import session
 from app.modules.customers.models import Customers
 from app.modules.sellers.models import Sellers
-
-from ...database import session
+from .models import *
+from app.modules.users.models import Users,UsersCreate
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 token_dependency = Annotated[str, Depends(oauth2_scheme)]
 form_dependency = Annotated[OAuth2PasswordRequestForm, Depends()]
+
+
+def db_get_user_by_username(username: str):
+    with session:
+        return session.query(Users).where(Users.username == username).one()
+
+
+def db_create_user_account(user_data: UsersCreate, role: RoleType):
+    password_hash = hash_password(user_data.password)
+    with session:
+        extra_data = {"password_hash": password_hash, "role": role}
+        db_user = Users.model_validate(user_data, update=extra_data)
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+        return db_user
 
 
 def authenticate_user(username: str, password: str):
@@ -30,17 +44,6 @@ def authenticate_user(username: str, password: str):
         "id": db_user.id,
         "role": db_user.role,
     }
-
-
-def create_access_token(user: UserSchema, expires_delta: timedelta = get_settings().access_token_expire_minutes):
-    encode = {
-        "username": user["username"],
-        "id": str(user["id"]),
-        "role": user["role"].value,
-        "exp": datetime.now(timezone.utc) + timedelta(minutes=expires_delta),
-    }
-    encode_jwt = jwt.encode(encode, get_settings().secret_key, algorithm=get_settings().algorithm)
-    return encode_jwt
 
 
 def verify_token(token: token_dependency):
@@ -85,6 +88,3 @@ def db_create_seller_account(role, seller_data, user_data):
         session.commit()
         session.refresh(db_user)
         return db_user
-
-
-

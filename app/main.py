@@ -5,7 +5,7 @@ from app.core.config import setting_dep
 from app.core.routes import api_router
 from app.database import create_db_and_tables
 
-from app.modules.auth.services import current_user_context
+from app.dependencies import current_user_context
 
 app = FastAPI()
 

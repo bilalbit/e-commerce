@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 from app.database import session
 from app.dependencies import get_current_user_data
 from .models import *
-from ...core.utils import hash_password
+from app.core.utils import hash_password
 
 
 def db_get_user_by_phone(phone_number: str):
@@ -38,3 +38,13 @@ def db_delete_account():
         db_user = db_get_user_info()
         session.delete(db_user)
         session.commit()
+
+def db_soft_delete_account(user_id: uuid.UUID):
+    with session:
+        db_user = db_get_user_info()
+        if db_user.id != user_id:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User not found")
+        db_user.is_active = False
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)

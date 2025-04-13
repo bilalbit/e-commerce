@@ -2,8 +2,8 @@ from fastapi import APIRouter
 
 from app.modules.customers.models import *
 from app.modules.sellers.models import SellersCreate
-from app.modules.users.models import *
 from .services import *
+from app.core.utils import create_access_token
 
 router = APIRouter(
     prefix="/auth",
@@ -21,14 +21,14 @@ def register(role: RoleType,
                             detail="only one account can be created at a time😑.either as a seller or customer.")
     if role is RoleType.customer:
         if customer_data is None:
-                raise HTTPException(status_code=status.HTTP_424_FAILED_DEPENDENCY, detail="customer data is required.")
+            raise HTTPException(status_code=status.HTTP_424_FAILED_DEPENDENCY, detail="customer data is required.")
         return db_create_customer_account(customer_data, role, user_data)
     elif role is RoleType.seller:
-            if seller_data is None:
-                raise HTTPException(status_code=status.HTTP_424_FAILED_DEPENDENCY, detail="seller data is required.")
-            return db_create_seller_account(role, seller_data, user_data)
+        if seller_data is None:
+            raise HTTPException(status_code=status.HTTP_424_FAILED_DEPENDENCY, detail="seller data is required.")
+        return db_create_seller_account(role, seller_data, user_data)
     else:
-            return db_create_user_account(user_data, role)
+        return db_create_user_account(user_data, role)
 
 
 @router.get("/verify-token")

@@ -23,3 +23,7 @@ def update_user_profile(user: UsersUpdate):
 @router.delete('/')
 def delete_account():
     return db_delete_account()
+
+@router.delete('/{user_id}')
+def soft_delete_account(user_id: uuid.UUID):
+    return db_soft_delete_account(user_id)

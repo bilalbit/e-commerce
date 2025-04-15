@@ -5,7 +5,8 @@ from sqlmodel import Field, SQLModel, Relationship
 
 from app.modules.users.models import UsersPublic
 
-# if TYPE_CHECKING:
+if TYPE_CHECKING:
+    from app.modules import Carts
 from app.modules import Users
 
 
@@ -22,6 +23,7 @@ class Customers(CustomersBase, table=True):
     user_id: uuid.UUID | None = Field(default=None, foreign_key="users.id", index=True, unique=True, ondelete="CASCADE")
 
     user: "Users" = Relationship(back_populates="customer")
+    cart: "Carts" = Relationship(back_populates="customer")
 
 
 class CustomersCreate(CustomersBase):

@@ -1,4 +1,7 @@
 from contextvars import ContextVar
+from typing import Annotated
+
+from fastapi import Depends
 
 from app.modules.auth.services import verify_token, token_dependency
 
@@ -15,6 +18,7 @@ async def get_current_user(token: token_dependency) -> dict | None:
         }
     )
     return current_user_context.get()
+current_user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 def get_current_user_data():

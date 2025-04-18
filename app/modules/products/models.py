@@ -28,7 +28,7 @@ class ProductsUpdate(SQLModel):
     name: str | None = None
     description: str | None = None
     price: Decimal | None = Field(decimal_places=2, default=None)
-    stock_quantity: int | None = Field(default=None, ge=1)
+    stock_quantity: int | None = Field(default=None, ge=0)
     is_available: bool | None = None
     category_id: uuid.UUID | None = None
 

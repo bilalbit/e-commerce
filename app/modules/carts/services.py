@@ -21,7 +21,7 @@ def db_get_or_create_cart(customer_id: uuid.UUID, db_session: Session):
 def db_get_cart(id:uuid.UUID):
     with session:
         db_cart = db_get_or_create_cart(id,session)
-        if db_cart.cart_items is not None:
+        if db_cart.cart_items:
             return db_cart
         raise HTTPException(status_code=404, detail="Items list is Empty")
 def db_add_cart_item(customer_id: uuid.UUID, cart_item_data: CartsCreate):

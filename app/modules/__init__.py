@@ -6,3 +6,4 @@ from .products.models import Products
 from .carts.models import Carts, CartItems
 from .wishlist.models import Wishlists, Wishlist_Items
 from .order.models import Orders, OrderItem
+from .payments.models import Payments

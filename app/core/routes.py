@@ -9,6 +9,7 @@ from app.modules.carts.routes import router as carts_router
 from app.modules.wishlist.routes import router as wishlist_router
 from app.modules.order.routes import router as order_router
 from app.modules.payments.routes import router as payment_router
+from app.modules.coupons.routes import router as coupons_router
 api_router = APIRouter()
 
 api_router.include_router(auth_router)
@@ -21,3 +22,4 @@ api_router.include_router(carts_router)
 api_router.include_router(wishlist_router)
 api_router.include_router(order_router)
 api_router.include_router(payment_router)
+api_router.include_router(coupons_router)

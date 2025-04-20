@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from .dependencies import admin_and_seller_only
-from app.dependencies import current_user_dependency
+from app.dependencies import admin_and_seller_only
+from app.core.security import current_user_dependency
 from .services import *
 
 router = APIRouter(
@@ -22,6 +22,7 @@ def get_categories_by_id(id: uuid.UUID):
 
 @router.post('/')
 def add_categories(categories: CategoriesCreate, user: current_user_dependency):
+    admin_and_seller_only(user)
     return db_add_categories(categories)
 
 

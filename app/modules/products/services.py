@@ -1,9 +1,8 @@
 from fastapi import HTTPException, status
 
-from app.database import session
-from app.modules.sellers.services import db_get_seller
-from .models import *
 from app.core.services import get_record_by_id
+from app.database import session
+from .models import *
 
 
 def db_add_product(product_data: ProductsCreate, seller_id: uuid.UUID):

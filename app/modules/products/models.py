@@ -7,7 +7,7 @@ from sqlmodel import Field, SQLModel, Relationship
 from app.core.models import TimeStampMixin
 
 if TYPE_CHECKING:
-    from app.modules import Categories
+    from app.modules import Categories,Reviews
 
 
 class ProductsBase(TimeStampMixin):
@@ -38,3 +38,4 @@ class Products(ProductsBase, table=True):
     seller_id: uuid.UUID | None = Field(foreign_key="sellers.id", ondelete="CASCADE")
     ##Relationships
     category: "Categories" = Relationship(back_populates="products")
+    reviews: list["Reviews"] = Relationship(back_populates="products")

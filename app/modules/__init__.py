@@ -8,3 +8,4 @@ from .wishlist.models import Wishlists, Wishlist_Items
 from .order.models import Orders, OrderItem
 from .payments.models import Payments
 from .coupons.models import Coupons, Coupon_Usage
+from .reviews.models import Reviews

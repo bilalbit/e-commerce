@@ -1,16 +1,15 @@
 from fastapi import APIRouter
 
-from app.dependencies import current_user_dependency
+from app.dependencies import current_seller_dependency
 from .services import *
 
 router = APIRouter(
     prefix="/products",
     tags=["products"],
-    # dependencies=[Depends(admin_and_customer_only)]
 )
 @router.post('/')
-def add_product(product_data: ProductsCreate,user: current_user_dependency):
-    return db_add_product(product_data)
+def add_product(product_data: ProductsCreate,seller: current_seller_dependency):
+    return db_add_product(product_data,seller.id)
 @router.get('/')
 def get_products():
     return db_get_products()
@@ -19,8 +18,8 @@ def get_products_by_id(id: uuid.UUID):
     return db_get_products_by_id(id)
 
 @router.patch('/{id}')
-def update_product(id: uuid.UUID,product_data: ProductsUpdate,user: current_user_dependency):
-    return db_update_product(id,product_data)
+def update_product(id: uuid.UUID,product_data: ProductsUpdate,seller: current_seller_dependency):
+    return db_update_product(id,product_data,seller.id)
 @router.delete('/{id}')
-def delete_product(id: uuid.UUID,user: current_user_dependency):
-    return db_delete_product(id)
+def delete_product(id: uuid.UUID,seller: current_seller_dependency):
+    return db_delete_product(id,seller.id)

@@ -1,4 +1,3 @@
-from contextvars import ContextVar
 from typing import Annotated
 
 from fastapi import HTTPException, status, Depends
@@ -6,13 +5,7 @@ from sqlmodel import Session, select
 
 from app.core.security import current_user_dependency
 from app.database import session
-from app.modules import Customers, Sellers,Users
-
-current_user_context: ContextVar[dict | None] = ContextVar("current_user_context", default=None)
-
-
-def get_current_user_data():
-    return current_user_context.get()
+from app.modules import Customers, Sellers, Users
 
 
 def get_current_customer(user: current_user_dependency, db_session: Session = Depends(lambda: session)):

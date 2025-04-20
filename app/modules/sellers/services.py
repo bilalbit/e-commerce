@@ -1,16 +1,8 @@
 from fastapi import HTTPException, status
-from sqlmodel import select
 
 from app.database import session
-from app.dependencies import get_current_user_data, get_current_seller
+from app.dependencies import get_current_seller
 from .models import *
-
-
-def db_get_seller():
-    with session:
-        user_id = get_current_user_data()["id"]
-        seller = session.exec(select(Sellers).where(Sellers.user_id == user_id)).one()
-        return seller
 
 
 def db_get_seller_info(user: dict):

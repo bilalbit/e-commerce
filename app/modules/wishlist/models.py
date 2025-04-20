@@ -21,7 +21,7 @@ class WishlistPublic(WishlistsBase):
 
 class Wishlist_ItemsBase(SQLModel):
     wishlist_id: uuid.UUID = Field(foreign_key="wishlists.id", index=True, ondelete="CASCADE")
-    product_id: uuid.UUID = Field(foreign_key="products.id", unique=True, index=True, ondelete="CASCADE")
+    product_id: uuid.UUID = Field(foreign_key="products.id", index=True, ondelete="CASCADE")
     added_at: datetime | None = Field(default_factory=lambda: datetime.now(timezone.utc), exclude=True)
 
 

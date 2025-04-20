@@ -1,24 +1,24 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from .dependencies import admin_and_seller_only
+from app.dependencies import current_user_dependency,admin_only
 from .services import *
 
 router = APIRouter(
     prefix="/sellers",
     tags=["sellers"],
-    dependencies=[Depends(admin_and_seller_only)]
 )
 
 
 
 @router.get('/', response_model=SellersPublicWithUsers)
-def get_seller_info(id: uuid.UUID):
-    return db_get_seller_info(id)
+def get_seller_info(user:current_user_dependency):
+    return db_get_seller_info(user)
 
-@router.put('/{id}')
-def update_seller_info(id: uuid.UUID,seller_data: SellersUpdate):
-    return db_update_seller_info(id,seller_data)
+@router.put('/')
+def update_seller_info(seller_data: SellersUpdate,user:current_user_dependency):
+    return db_update_seller_info(seller_data,user)
 
 @router.patch('/{id}')
-def verify_seller(id: uuid.UUID,verify: bool):
+def verify_seller(id:uuid.UUID,verify: bool,user:current_user_dependency):
+    admin_only(user)
     return db_verify_seller(id,verify)

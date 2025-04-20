@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from app.modules.auth.services import verify_token, token_dependency
+from app.core.security import verify_token, token_dependency
 
 current_user_context: ContextVar[dict | None] = ContextVar("current_user_context", default=None)
 

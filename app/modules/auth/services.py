@@ -1,22 +1,11 @@
-from typing import Annotated
+from fastapi import HTTPException, status
 
-import jwt
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt import InvalidTokenError
-
-from app.core.config import get_settings
 from app.core.utils import verify_password, hash_password
 from app.database import session
 from app.modules.customers.models import Customers
 from app.modules.sellers.models import Sellers
 from .models import *
 from app.modules.users.models import Users,UsersCreate
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
-
-token_dependency = Annotated[str, Depends(oauth2_scheme)]
-form_dependency = Annotated[OAuth2PasswordRequestForm, Depends()]
 
 
 def db_get_user_by_username(username: str):
@@ -43,28 +32,6 @@ def authenticate_user(username: str, password: str):
         "username": db_user.username,
         "id": db_user.id,
         "role": db_user.role,
-    }
-
-
-def verify_token(token: token_dependency):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, get_settings().secret_key, algorithms=[get_settings().algorithm])
-        username: str = payload.get("username")
-        id: str = payload.get("id")
-        role: str = str(payload.get("role"))
-        if username is None or id is None or role is None:
-            raise credentials_exception
-    except InvalidTokenError:
-        raise credentials_exception
-    return {
-        "username": username,
-        "id": id,
-        "role": role
     }
 
 

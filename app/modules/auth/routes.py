@@ -1,10 +1,14 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.modules.customers.models import *
 from app.modules.sellers.models import SellersCreate
 from .services import *
-from app.core.utils import create_access_token
+from app.core.security import verify_token,create_access_token
 
+form_dependency = Annotated[OAuth2PasswordRequestForm, Depends()]
 router = APIRouter(
     prefix="/auth",
     tags=["auth"]
@@ -34,6 +38,8 @@ def register(role: RoleType,
 @router.get("/verify-token")
 async def verify_user_token(token: str):
     return verify_token(token)
+
+
 
 
 @router.post("/token", response_model=Token)

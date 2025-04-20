@@ -1,4 +1,4 @@
-from fastapi import HTTPException,status
+from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
 from app.database import session
@@ -16,9 +16,9 @@ def db_get_or_create_cart(customer_id: uuid.UUID, db_session: Session):
     return db_cart
 
 
-def db_get_cart(id: uuid.UUID):
-    with session:
-        db_cart = db_get_or_create_cart(id, session)
+def db_get_cart(id: uuid.UUID,db_session: Session = session):
+    with db_session:
+        db_cart = db_get_or_create_cart(id, db_session)
         if db_cart.cart_items:
             return db_cart
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart Items list is Empty")

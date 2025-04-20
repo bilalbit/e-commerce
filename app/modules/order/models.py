@@ -2,13 +2,8 @@ import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
 from enum import Enum
-from typing import TYPE_CHECKING
 
 from sqlmodel import Field, SQLModel, Relationship
-
-
-if TYPE_CHECKING:
-    from app.modules import Customers
 
 
 class OrderItemBase(SQLModel):
@@ -16,8 +11,10 @@ class OrderItemBase(SQLModel):
     quantity: int = Field(ge=1)
     price_at_purchase: Decimal = Field(decimal_places=2)
 
+
 class OrderItemPublic(OrderItemBase):
     id: uuid.UUID
+
 
 class OrderItem(OrderItemBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
@@ -40,7 +37,7 @@ class OrderBase(SQLModel):
     order_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     total_amount: Decimal = Field(ge=1, decimal_places=2)
     status: OrderStatus = Field(default=OrderStatus.pending)
-    shipping_address: str = Field(default=None,min_length=3, max_length=255,nullable=True)
+    shipping_address: str = Field(default=None, min_length=3, max_length=255, nullable=True)
 
 
 class Orders(OrderBase, table=True):
@@ -51,7 +48,15 @@ class Orders(OrderBase, table=True):
     order_items: list["OrderItem"] = Relationship(back_populates="order", passive_deletes="all")
 
 
+class OrdersWithOrder_ItemsPublic(OrderBase):
+    id: uuid.UUID
+    order_items: list["OrderItemPublic"]
+
 
 class OrdersPublic(OrderBase):
     id: uuid.UUID
-    order_items: list["OrderItemPublic"]
+
+
+class OrderCreate(SQLModel):
+    shipping_address: str = Field(min_length=3, max_length=200)
+    quantity: int = Field(ge=1)

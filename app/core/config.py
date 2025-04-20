@@ -14,9 +14,10 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file="../.env")
 
-
+# use this for getting .env configs
 @lru_cache
 def get_settings():
     return Settings()
 
+#use this for testing purpose only
 setting_dep = Annotated[Settings, Depends(get_settings)]

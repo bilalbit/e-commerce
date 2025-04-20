@@ -13,6 +13,7 @@ from app.core.models import UserSchema
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 token_dependency = Annotated[str, Depends(oauth2_scheme)]
 
+
 def create_access_token(user: UserSchema, expires_delta: timedelta = get_settings().access_token_expire_minutes):
     encode = {
         "username": user["username"],
@@ -22,8 +23,6 @@ def create_access_token(user: UserSchema, expires_delta: timedelta = get_setting
     }
     encode_jwt = jwt.encode(encode, get_settings().secret_key, algorithm=get_settings().algorithm)
     return encode_jwt
-
-
 
 
 def verify_token(token: token_dependency):
@@ -46,3 +45,6 @@ def verify_token(token: token_dependency):
         "id": id,
         "role": role
     }
+
+current_user = Depends(verify_token)
+current_user_dependency = Annotated[dict, current_user]

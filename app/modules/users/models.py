@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from app.modules import Sellers
 
 
-class UsersBase(TimeStampMixin):
+class UsersBase(SQLModel):
     username: str = Field(min_length=3, index=True, unique=True)
     email: EmailStr = Field(index=True, unique=True)
     first_name: str = Field(min_length=3)
@@ -21,7 +21,7 @@ class UsersBase(TimeStampMixin):
     is_active: bool = Field(default=True)
 
 
-class Users(UsersBase, table=True):
+class Users(UsersBase,TimeStampMixin, table=True):
     id: uuid.UUID | None = Field(primary_key=True, index=True, default_factory=uuid.uuid4)
     password_hash: str
     role: RoleType

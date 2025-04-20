@@ -1,29 +1,26 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
+from app.core.security import current_user_dependency
 from .services import *
-from app.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/users",
     tags=["users"],
-    dependencies=[Depends(get_current_user)]
 )
 
 
 @router.get('/')
-def get_user_info():
-    return db_get_user_info()
+def get_user_info(user:current_user_dependency):
+    return db_get_user_info(user["id"])
 
 
 @router.patch('/')
-def update_user_profile(user: UsersUpdate):
-    return db_update_profile(user)
+def update_user_profile(user_data: UsersUpdate,user:current_user_dependency):
+    return db_update_profile(user_data,user["id"])
 
 
 @router.delete('/')
-def delete_account():
-    return db_delete_account()
+def delete_account(user:current_user_dependency):
+    return db_delete_account(user["id"])
 
-@router.delete('/{user_id}')
-def soft_delete_account(user_id: uuid.UUID):
-    return db_soft_delete_account(user_id)
+

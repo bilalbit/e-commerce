@@ -6,26 +6,20 @@ from typing import Annotated
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 from sqlmodel import Field, SQLModel
 
+from app.core.config import get_settings
+
 
 class TimeStampMixin(SQLModel):
-    created_at: datetime | None = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        exclude=True,
-        nullable=False
-    )
-    updated_at: datetime | None = Field(
-        default=None,
-        sa_column_kwargs={"onupdate": lambda: datetime.now(timezone.utc)},
-        exclude=True
-    )
+    created_at: datetime | None = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime | None = Field(default=None,sa_column_kwargs={"onupdate": lambda: datetime.now(timezone.utc)},)
 
 
-EthiopianPhoneNumber = Annotated[
+PhoneNumber = Annotated[
     str,
     PhoneNumberValidator(
-        supported_regions=["ET"],  # Only allow Ethiopian region
-        default_region="ET",  # Default to Ethiopia
-        number_format="E164",  # Standard format (e.g., +251912345678)
+        supported_regions=get_settings().supported_regions,
+        default_region=get_settings().default_region,
+        number_format=get_settings().number_format
     )
 ]
 

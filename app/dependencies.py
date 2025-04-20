@@ -76,5 +76,12 @@ def admin_and_seller_only(user: current_user_dependency):
     if user_role != "admin" and user_role != "seller":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Only seller and customer authorized to do this operation"
+            detail="Only admin and seller authorized to do this operation"
+        )
+def admin_only(user: current_user_dependency):
+    user_role = user["role"]
+    if user_role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only admin authorized to do this operation"
         )

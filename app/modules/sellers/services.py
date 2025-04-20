@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlmodel import select
 
 from app.database import session
-from app.dependencies import get_current_user_data
+from app.dependencies import get_current_user_data, get_current_seller
 from .models import *
 
 
@@ -13,21 +13,17 @@ def db_get_seller():
         return seller
 
 
-def db_get_seller_info(id: uuid.UUID):
+def db_get_seller_info(user: dict):
     with session:
-        user_id = get_current_user_data()["id"]
-        db_user = session.get(Users, user_id)
-        if db_user.seller.id == id:
+        db_user = session.get(Users, user["id"])
+        if db_user.seller:
             return db_user
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User not Found")
 
 
-def db_update_seller_info(id: uuid.UUID, seller_data: SellersUpdate):
+def db_update_seller_info(seller_data: SellersUpdate,user: dict):
     with session:
-        user_id = get_current_user_data()["id"]
-        db_seller = session.get(Sellers, id)
-        if str(db_seller.user_id) != user_id:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User not Found")
+        db_seller = get_current_seller(user,session)
         seller_update = seller_data.model_dump(exclude_unset=True)
         db_seller.sqlmodel_update(seller_update)
         session.add(db_seller)
@@ -38,10 +34,7 @@ def db_update_seller_info(id: uuid.UUID, seller_data: SellersUpdate):
 
 def db_verify_seller(id: uuid.UUID, verify: bool):
     with session:
-        user_id = get_current_user_data()["id"]
         db_seller = session.get(Sellers, id)
-        if str(db_seller.user_id) != user_id:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User not Found")
         db_seller.verified = verify
         session.add(db_seller)
         session.commit()

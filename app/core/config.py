@@ -6,11 +6,16 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    database_url: str  # Use SQLite initially
-    secret_key: str  # Generate a secure key
+    database_url: str
+    secret_key: str
     algorithm: str
     access_token_expire_minutes: int
     salt: str
+
+    ##phone number validator
+    supported_regions:set
+    default_region:str
+    number_format:str
 
     model_config = SettingsConfigDict(env_file="../.env")
 

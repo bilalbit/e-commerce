@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel, Relationship
 
-from app.core.models import TimeStampMixin, EthiopianPhoneNumber, RoleType
+from app.core.models import TimeStampMixin, PhoneNumber, RoleType
 
 if TYPE_CHECKING:
     from app.modules.customers.models import Customers
@@ -17,7 +17,7 @@ class UsersBase(TimeStampMixin):
     email: EmailStr = Field(index=True, unique=True)
     first_name: str = Field(min_length=3)
     last_name: str = Field(min_length=3)
-    phone_number: EthiopianPhoneNumber = Field(index=True, unique=True)
+    phone_number: PhoneNumber = Field(index=True, unique=True)
     is_active: bool = Field(default=True)
 
 
@@ -39,7 +39,7 @@ class UsersPublic(SQLModel):
     last_name: str
     username: str
     email: EmailStr
-    phone_number: EthiopianPhoneNumber
+    phone_number: PhoneNumber
 
 
 class UsersUpdate(UsersBase):
@@ -48,5 +48,5 @@ class UsersUpdate(UsersBase):
     password: str | None = Field(default=None, min_length=8)
     first_name: str | None = None
     last_name: str | None = None
-    phone_number: EthiopianPhoneNumber | None = None
+    phone_number: PhoneNumber | None = None
     is_active: bool | None = None

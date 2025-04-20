@@ -1,19 +1,20 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from .dependencies import admin_and_customer_only
 from .services import *
+from app.dependencies import current_user_dependency,admin_and_customer_only
 
 router = APIRouter(
     prefix="/customers",
     tags=["customers"],
-    dependencies=[Depends(admin_and_customer_only)]
 )
 
 
-@router.patch('/{id}')
-def update_customer_account(id: uuid.UUID,customer_data: CustomersUpdate):
-    return db_update_customer_account(id,customer_data)
+@router.patch('/')
+def update_customer_account(user: current_user_dependency,customer_data: CustomersUpdate):
+    admin_and_customer_only(user)
+    return db_update_customer_account(user,customer_data)
 
 @router.get('/',response_model=CustomerPublicWithUser)
-def get_customer_info(id: uuid.UUID):
-    return db_get_customer_info(id)
+def get_customer_info(user: current_user_dependency):
+    admin_and_customer_only(user)
+    return db_get_customer_info(user)

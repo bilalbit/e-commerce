@@ -22,8 +22,8 @@ class Customers(CustomersBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
     user_id: uuid.UUID | None = Field(default=None, foreign_key="users.id", index=True, unique=True, ondelete="CASCADE")
 
-    user: "Users" = Relationship(back_populates="customer")
-    cart: "Carts" = Relationship(back_populates="customer")
+    user: "Users" = Relationship(back_populates="customer",passive_deletes="all")
+    cart: "Carts" = Relationship(back_populates="customer",passive_deletes="all")
 
 
 class CustomersCreate(CustomersBase):
@@ -40,8 +40,6 @@ class CustomersPublic(CustomersBase):
 
 class CustomerPublicWithUser(UsersPublic):
     customer: CustomersPublic
-# class CustomerPublicWithUser(CustomersPublic):
-    # user: UsersPublic
 
 
 class CustomersUpdate(SQLModel):

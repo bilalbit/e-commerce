@@ -2,6 +2,7 @@ from contextvars import ContextVar
 from typing import Annotated
 
 from fastapi import HTTPException, status, Depends
+from sqlmodel import Session, select
 
 from app.core.security import current_user_dependency
 from app.database import session
@@ -14,34 +15,46 @@ def get_current_user_data():
     return current_user_context.get()
 
 
-def get_current_customer(user: current_user_dependency):
+def get_current_customer(user: current_user_dependency,db_session:Session = session):
     if user["role"] != "customer":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Customer role required")
-    with session:
-        customer = session.query(Customers).filter(Customers.user_id == user["id"]).first()
+    with db_session:
+        customer = db_session.exec(
+            select(Customers).where(
+                Customers.user_id == user["id"]
+            )
+        ).first()
         if not customer:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
         return customer
 
 
-def get_current_seller(user: current_user_dependency):
+def get_current_seller(user: current_user_dependency,db_session:Session = session):
     if user["role"] != "seller":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Seller role required")
-    with session:
-        customer = session.query(Sellers).filter(Sellers.user_id == user["id"]).first()
-        if not customer:
+    with db_session:
+        seller = db_session.exec(
+            select(Sellers).where(
+                Sellers.user_id == user["id"]
+            )
+        ).first()
+        if not seller:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Seller not found")
-        return customer
+        return seller
 
 
-def get_current_admin(user: current_user_dependency):
+def get_current_admin(user: current_user_dependency,db_session:Session = session):
     if user["role"] != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin role required")
-    with session:
-        customer = session.query(Sellers).filter(Sellers.user_id == user["id"]).first()
-        if not customer:
+    with db_session:
+        admin = db_session.exec(
+            select(Sellers).where(
+                Sellers.user_id == user["id"]
+            )
+        ).first()
+        if not admin:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found")
-        return customer
+        return admin
 
 
 current_customer_dependency = Annotated[dict, Depends(get_current_customer)]

@@ -18,7 +18,7 @@ def create_access_token(user: UserSchema, expires_delta: timedelta = get_setting
     encode = {
         "username": user["username"],
         "id": str(user["id"]),
-        "role": user["role"].value,
+        "role": str(user["role"].value),
         "exp": datetime.now(timezone.utc) + timedelta(minutes=expires_delta),
     }
     encode_jwt = jwt.encode(encode, get_settings().secret_key, algorithm=get_settings().algorithm)
@@ -83,4 +83,13 @@ def seller_only(user: current_user_dependency):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Only seller authorized to do this operation"
+        )
+
+
+def customer_only(user: current_user_dependency):
+    user_role = user["role"]
+    if user_role != "customer":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only customer authorized to do this operation"
         )

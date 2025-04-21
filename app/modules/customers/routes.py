@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
+from app.core.security import admin_and_customer_only, customer_only
 from app.dependencies import current_user_dependency
 from .services import *
-from ...core.security import admin_and_customer_only
 
 router = APIRouter(
     prefix="/customers",
@@ -10,6 +10,10 @@ router = APIRouter(
 )
 
 
+@router.post('/')
+def create_customer_account(user: current_user_dependency, customer_data: CustomersUpdate):
+    customer_only(user)
+    return db_create_customer_account(user, customer_data)
 @router.patch('/')
 def update_customer_account(user: current_user_dependency,customer_data: CustomersUpdate):
     admin_and_customer_only(user)

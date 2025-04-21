@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
+from app.core.security import admin_only, seller_only
 from app.dependencies import current_user_dependency
 from .services import *
-from ...core.security import admin_only
 
 router = APIRouter(
     prefix="/sellers",
@@ -15,6 +15,11 @@ router = APIRouter(
 def get_seller_info(user:current_user_dependency):
     return db_get_seller_info(user)
 
+
+@router.post('/')
+def create_seller_info(seller_data: SellersUpdate, user: current_user_dependency):
+    seller_only(user)
+    return db_create_seller_info(user, seller_data)
 @router.put('/')
 def update_seller_info(seller_data: SellersUpdate,user:current_user_dependency):
     return db_update_seller_info(seller_data,user)

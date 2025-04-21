@@ -31,6 +31,8 @@ class Users(UsersBase,TimeStampMixin, table=True):
 
 class UsersCreate(UsersBase):
     password: str = Field(min_length=8)
+    role: RoleType | None = None
+
 
 
 class UsersPublic(SQLModel):
@@ -39,6 +41,7 @@ class UsersPublic(SQLModel):
     username: str
     email: EmailStr
     phone_number: PhoneNumber
+    role: RoleType
 
 
 class UsersUpdate(UsersBase):

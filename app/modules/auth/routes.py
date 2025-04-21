@@ -3,10 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
+from app.core.security import verify_token, create_access_token
 from app.modules.customers.models import *
 from app.modules.sellers.models import SellersCreate
 from .services import *
-from app.core.security import verify_token,create_access_token
 
 form_dependency = Annotated[OAuth2PasswordRequestForm, Depends()]
 router = APIRouter(
@@ -15,8 +15,12 @@ router = APIRouter(
 )
 
 
+@router.post('/register')
+def register(user_data: UsersCreate):
+    return db_register_user(user_data)
+
 @router.post('/register/{role}')
-def register(role: RoleType,
+def register_with_role(role: RoleType,
              user_data: UsersCreate,
              customer_data: CustomersCreate | None = None,
              seller_data: SellersCreate | None = None):

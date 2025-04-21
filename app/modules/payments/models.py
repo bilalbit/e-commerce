@@ -28,7 +28,7 @@ class PaymentBase(SQLModel):
 
 class Payments(PaymentBase, table=True):
     id: uuid.UUID | None = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
-    customer_id: uuid.UUID = Field(foreign_key="customers.id", unique=True, index=True)
+    customer_id: uuid.UUID = Field(foreign_key="customers.id", index=True)
     status: PaymentStatus = Field(default=PaymentStatus.pending)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

@@ -26,7 +26,7 @@ def get_orders(customer: current_customer_dependency):
 
 @router.get('/{id}', response_model=OrdersWithOrder_ItemsPublic)
 def get_order_by_id(id: uuid.UUID, customer: current_customer_dependency):
-    return db_get_order_of_customer_by_id(id, customer.id)
+    return db_get_order_by_customer_id_and_order_id(id, customer.id)
 
 
 @router.patch('/{id}', response_model=OrdersPublic)

@@ -3,9 +3,11 @@ from typing import Annotated
 from fastapi import HTTPException, status, Depends
 from sqlmodel import Session, select
 
-from app.core.security import current_user_dependency
+from app.core.security import current_user
 from app.database import session
 from app.modules import Customers, Sellers, Users
+
+current_user_dependency = Annotated[dict, current_user]
 
 
 def get_current_customer(user: current_user_dependency, db_session: Session = Depends(lambda: session)):

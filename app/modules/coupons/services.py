@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlmodel import select, Session
 
 from app.database import session
-from app.modules.order.services import db_get_order_by_id
+from app.modules.order.services import db_get_order_by_customer_id_and_order_id
 from .models import *
 from ..order.models import OrderStatus
 
@@ -84,7 +84,7 @@ def db_update_coupon(id: uuid.UUID, coupon_data: CouponsUpdate):
 
 def db_apply_coupon(coupon_apply: CouponApply, customer_id: uuid.UUID):
     with session:
-        db_order = db_get_order_by_id(coupon_apply.order_id, customer_id, session)
+        db_order = db_get_order_by_customer_id_and_order_id(coupon_apply.order_id, customer_id, session)
         if db_order.status != OrderStatus.pending:
             raise HTTPException(status_code=404, detail=f"order is already {db_order.status}")
         db_coupon = db_get_coupons_by_code(coupon_apply.code, session)

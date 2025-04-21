@@ -55,11 +55,7 @@ def db_add_cart_item(customer_id: uuid.UUID, cart_item_data: CartsCreate):
 
 def db_update_cart_item(cart_item_id: uuid.UUID, customer_id: uuid.UUID, cart_data: CartsUpdate):
     with session:
-        db_cart = session.exec(
-            select(Carts).where(
-                Carts.customer_id == customer_id,
-            )
-        ).one()
+        db_cart = db_get_or_create_cart(customer_id, session)
         db_cart_item = session.exec(
             select(CartItems).where(
                 CartItems.cart_id == db_cart.id,

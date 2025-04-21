@@ -7,7 +7,7 @@ from .models import *
 
 def db_get_user_by_phone(phone_number: str):
     with session:
-        return session.query(Users).where(Users.phone_number == phone_number).one()
+        return session.query(Users).where(Users.phone_number == phone_number).first()
 
 
 def db_get_user_info(user_id: uuid.UUID):

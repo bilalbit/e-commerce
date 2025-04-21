@@ -1,5 +1,7 @@
 from fastapi import HTTPException, status
+from sqlmodel import select
 
+from app.core.models import filter_query
 from app.core.services import get_record_by_id
 from app.database import session
 from .models import *
@@ -14,9 +16,10 @@ def db_add_product(product_data: ProductsCreate, seller_id: uuid.UUID):
         return db_product
 
 
-def db_get_products():
+def db_get_products(filter_q: filter_query):
     with session:
-        sellers = session.query(Products).all()
+        statement = select(Products).offset(filter_q.offset).limit(filter_q.limit).order_by(filter_q.order_by)
+        sellers = session.exec(statement).all()
         return sellers
 
 

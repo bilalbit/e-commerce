@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 
+from app.dependencies import current_user_dependency
 from .services import *
-from app.dependencies import current_user_dependency,admin_and_customer_only
+from ...core.security import admin_and_customer_only
 
 router = APIRouter(
     prefix="/customers",

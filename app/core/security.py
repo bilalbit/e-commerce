@@ -47,3 +47,40 @@ def verify_token(token: token_dependency):
     }
 
 current_user = Depends(verify_token)
+
+current_user_dependency = Annotated[dict, current_user]
+
+def admin_and_customer_only(user: current_user_dependency):
+    user_role = user["role"]
+    if user_role != "admin" and user_role != "customer":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only admin and customer authorized to do this operation"
+        )
+
+
+def admin_and_seller_only(user: current_user_dependency):
+    user_role = user["role"]
+    if user_role != "admin" and user_role != "seller":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only admin and seller authorized to do this operation"
+        )
+
+
+def admin_only(user: current_user_dependency):
+    user_role = user["role"]
+    if user_role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only admin authorized to do this operation"
+        )
+
+
+def seller_only(user: current_user_dependency):
+    user_role = user["role"]
+    if user_role != "seller":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Only seller authorized to do this operation"
+        )

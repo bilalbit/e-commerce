@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 
-from app.dependencies import admin_and_seller_only, current_user_dependency
+from app.dependencies import current_user_dependency
 from .services import *
+from ...core.security import admin_and_seller_only
 
 router = APIRouter(
     prefix="/categories",

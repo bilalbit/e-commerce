@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 
-from app.dependencies import current_user_dependency,admin_only
+from app.dependencies import current_user_dependency
 from .services import *
+from ...core.security import admin_only
 
 router = APIRouter(
     prefix="/sellers",

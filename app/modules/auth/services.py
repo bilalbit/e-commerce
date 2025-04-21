@@ -4,13 +4,13 @@ from app.core.utils import verify_password, hash_password
 from app.database import session
 from app.modules.customers.models import Customers
 from app.modules.sellers.models import Sellers
+from app.modules.users.models import Users, UsersCreate
 from .models import *
-from app.modules.users.models import Users,UsersCreate
 
 
 def db_get_user_by_username(username: str):
     with session:
-        return session.query(Users).where(Users.username == username).one()
+        return session.query(Users).where(Users.username == username).first()
 
 
 def db_create_user_account(user_data: UsersCreate, role: RoleType):

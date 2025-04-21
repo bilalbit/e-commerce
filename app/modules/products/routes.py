@@ -11,8 +11,8 @@ router = APIRouter(
 def add_product(product_data: ProductsCreate,seller: current_seller_dependency):
     return db_add_product(product_data,seller.id)
 @router.get('/')
-def get_products():
-    return db_get_products()
+def get_products(filter_q: filter_query):
+    return db_get_products(filter_q)
 @router.get('/{id}')
 def get_products_by_id(id: uuid.UUID):
     return db_get_products_by_id(id)

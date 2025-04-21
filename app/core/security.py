@@ -47,4 +47,3 @@ def verify_token(token: token_dependency):
     }
 
 current_user = Depends(verify_token)
-current_user_dependency = Annotated[dict, current_user]

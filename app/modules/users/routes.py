@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.core.security import current_user_dependency
 from .services import *
+from ...dependencies import current_user_dependency
 
 router = APIRouter(
     prefix="/users",

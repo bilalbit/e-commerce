@@ -9,7 +9,7 @@ from app.modules.products.services import db_update_product_stock_quantity, db_g
 from .models import *
 
 
-def db_get_order_of_customer_by_id(order_id: uuid.UUID, customer_id: uuid.UUID, db_session: Session = session):
+def db_get_order_by_customer_id_and_order_id(order_id: uuid.UUID, customer_id: uuid.UUID, db_session: Session = session):
     with db_session:
         db_order = db_session.exec(
             select(Orders).where(
@@ -63,7 +63,7 @@ def db_create_order(shipping_address: str, customer_id: uuid.UUID):
         session.refresh(db_order)
         db_clear_cart(customer_id)
 
-        return db_get_order_of_customer_by_id(db_order_id, customer_id)
+        return db_get_order_by_customer_id_and_order_id(db_order_id, customer_id)
 
 
 def db_add_product_to_order(product_id: uuid.UUID, order_create: OrderCreate, customer_id: uuid.UUID):
@@ -86,7 +86,7 @@ def db_add_product_to_order(product_id: uuid.UUID, order_create: OrderCreate, cu
         session.add(db_order)
         session.commit()
         session.refresh(db_order)
-        return db_get_order_of_customer_by_id(db_order.id, customer_id)
+        return db_get_order_by_customer_id_and_order_id(db_order.id, customer_id)
 
 
 def db_update_order_status(id: uuid.UUID, order_status: OrderStatus):

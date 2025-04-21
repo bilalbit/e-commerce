@@ -55,37 +55,3 @@ current_seller_dependency = Annotated[Sellers, Depends(get_current_seller)]
 current_admin_dependency = Annotated[Users, Depends(get_current_admin)]
 
 
-def admin_and_customer_only(user: current_user_dependency):
-    user_role = user["role"]
-    if user_role != "admin" and user_role != "customer":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Only admin and customer authorized to do this operation"
-        )
-
-
-def admin_and_seller_only(user: current_user_dependency):
-    user_role = user["role"]
-    if user_role != "admin" and user_role != "seller":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Only admin and seller authorized to do this operation"
-        )
-
-
-def admin_only(user: current_user_dependency):
-    user_role = user["role"]
-    if user_role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Only admin authorized to do this operation"
-        )
-
-
-def seller_only(user: current_user_dependency):
-    user_role = user["role"]
-    if  user_role != "seller":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Only seller authorized to do this operation"
-        )

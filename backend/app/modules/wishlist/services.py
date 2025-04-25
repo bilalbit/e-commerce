@@ -1,8 +1,8 @@
-from fastapi import HTTPException,status
+from fastapi import HTTPException, status
 from sqlmodel import select, Session
 
-from .models import *
 from app.database import session
+from .models import *
 
 
 def db_get_or_create_wishlist(db: Session, customer_id: uuid.UUID):

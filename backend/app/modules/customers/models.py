@@ -6,8 +6,7 @@ from sqlmodel import Field, SQLModel, Relationship
 from app.modules.users.models import UsersPublic
 
 if TYPE_CHECKING:
-    from app.modules import Carts
-from app.modules import Users
+    from app.modules import Carts, Users
 
 
 class CustomersBase(SQLModel):

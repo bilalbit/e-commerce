@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from .services import *
 from app.dependencies import current_customer_dependency
+from .services import *
 
 router = APIRouter(
     prefix="/wishlist",

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
+from app.core.security import admin_and_seller_only
 from app.dependencies import current_customer_dependency
 from .services import *
-from app.core.security import admin_and_seller_only
 
 router = APIRouter(
     prefix="/coupons",

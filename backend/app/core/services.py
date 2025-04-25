@@ -1,5 +1,5 @@
 import uuid
-from typing import TypeVar,Type
+from typing import TypeVar, Type
 
 from fastapi import HTTPException, status
 from sqlmodel import SQLModel

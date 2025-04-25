@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from .services import *
 from app.dependencies import current_user_dependency
+from .services import *
 
 router = APIRouter(
     prefix="/users",

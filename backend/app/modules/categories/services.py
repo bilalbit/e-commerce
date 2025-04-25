@@ -1,6 +1,6 @@
+from app.core.services import get_record_by_id
 from app.database import session
 from .models import *
-from app.core.services import get_record_by_id
 
 
 def db_get_categories():

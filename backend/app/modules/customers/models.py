@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 
 from sqlmodel import Field, SQLModel, Relationship
 
-from backend.app.modules.users.models import UsersPublic
+from backend.app.modules.users.models import UsersPublic, Users
 
 if TYPE_CHECKING:
-    from backend.app.modules import Carts, Users
+    from backend.app.modules import Carts
 
 
 class CustomersBase(SQLModel):

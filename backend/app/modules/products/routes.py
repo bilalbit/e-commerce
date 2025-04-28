@@ -7,7 +7,9 @@ router = APIRouter(
     prefix="/products",
     tags=["products"],
 )
-@router.post('/')
+
+
+@router.post('/', status_code=status.HTTP_201_CREATED)
 def add_product(product_data: ProductsCreate,seller: current_seller_dependency):
     return db_add_product(product_data,seller.id)
 @router.get('/')
@@ -20,6 +22,8 @@ def get_products_by_id(id: uuid.UUID):
 @router.patch('/{id}')
 def update_product(id: uuid.UUID,product_data: ProductsUpdate,seller: current_seller_dependency):
     return db_update_product(id,product_data,seller.id)
-@router.delete('/{id}')
+
+
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(id: uuid.UUID,seller: current_seller_dependency):
     return db_delete_product(id,seller.id)

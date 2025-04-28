@@ -66,7 +66,7 @@ def db_create_order(shipping_address: str, customer_id: uuid.UUID):
         return db_get_order_by_customer_id_and_order_id(db_order_id, customer_id)
 
 
-def db_add_product_to_order(product_id: uuid.UUID, order_create: OrderCreate, customer_id: uuid.UUID):
+def db_order_one_product(product_id: uuid.UUID, order_create: OrderCreate, customer_id: uuid.UUID):
     with session:
         db_product = db_get_products_by_id(product_id)
         db_update_product_stock_quantity(db_product.id, order_create.quantity)

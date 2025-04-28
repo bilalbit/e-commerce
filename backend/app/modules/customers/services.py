@@ -5,6 +5,14 @@ from backend.app.dependencies import get_current_customer
 from .models import *
 
 
+def db_get_customer_info(user: dict):
+    with session:
+        db_user = session.get(Users, user["id"])
+        if db_user.customer:
+            return db_user
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="customer not Found")
+
+
 def db_update_customer_account(user: dict, customer_data: CustomersUpdate):
     with session:
         db_customer = get_current_customer(user, session)
@@ -13,15 +21,7 @@ def db_update_customer_account(user: dict, customer_data: CustomersUpdate):
         session.add(db_customer)
         session.commit()
         session.refresh(db_customer)
-        return db_customer
-
-
-def db_get_customer_info(user: dict):
-    with session:
-        db_user = session.get(Users, user["id"])
-        if db_user.customer:
-            return db_user
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User not Found")
+        return db_get_customer_info(user)
 
 
 def db_create_customer_account(user: dict, customer_data: CustomersCreate):

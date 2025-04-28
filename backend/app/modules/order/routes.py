@@ -10,14 +10,14 @@ router = APIRouter(
 )
 
 
-@router.post('/', response_model=OrdersWithOrder_ItemsPublic)
+@router.post('/', response_model=OrdersWithOrder_ItemsPublic, status_code=status.HTTP_201_CREATED)
 def add_order_from_cart(shipping_address: str, customer: current_customer_dependency):
     return db_create_order(shipping_address, customer.id)
 
 
 @router.post('/{product_id}', response_model=OrdersWithOrder_ItemsPublic)
-def add_order_on_one_product(product_id: uuid.UUID, order_create: OrderCreate, customer: current_customer_dependency):
-    return db_add_product_to_order(product_id, order_create, customer.id)
+def order_one_product(product_id: uuid.UUID, order_create: OrderCreate, customer: current_customer_dependency):
+    return db_order_one_product(product_id, order_create, customer.id)
 
 
 @router.get('/', response_model=list[Orders])

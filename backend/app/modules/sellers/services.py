@@ -10,7 +10,7 @@ def db_get_seller_info(user: dict):
         db_user = session.get(Users, user["id"])
         if db_user.seller:
             return db_user
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User not Found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="seller not Found")
 
 
 def db_create_seller_info(user: dict, seller_data: SellersCreate):

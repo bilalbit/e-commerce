@@ -10,11 +10,13 @@ router = APIRouter(
 )
 
 
-@router.post('/')
+@router.post('/', response_model=CustomerPublicWithUser, status_code=status.HTTP_201_CREATED)
 def create_customer_account(user: current_user_dependency, customer_data: CustomersUpdate):
     customer_only(user)
     return db_create_customer_account(user, customer_data)
-@router.patch('/')
+
+
+@router.patch('/', response_model=CustomerPublicWithUser)
 def update_customer_account(user: current_user_dependency,customer_data: CustomersUpdate):
     admin_and_customer_only(user)
     return db_update_customer_account(user,customer_data)

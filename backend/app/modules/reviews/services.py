@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlmodel import select, Session
 
 from backend.app.database import session
@@ -11,11 +11,11 @@ def db_add_review(customer_id: uuid.UUID, review_data: ReviewCreate):
     with session:
         db_order = db_get_order_by_customer_id_and_order_id(review_data.order_id, customer_id, session)
         if db_order.status != OrderStatus.delivered:
-            raise HTTPException(status_code=404, detail="Order does not delivered yet")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order does not delivered yet")
         db_order_items = db_order.order_items
         is_product_included = any(order_item.product_id == review_data.product_id for order_item in db_order_items)
         if not is_product_included:
-            raise HTTPException(status_code=404, detail="Product not included")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not included")
 
         db_review = Reviews.model_validate(review_data, update={"customer_id": customer_id})
 
@@ -44,7 +44,7 @@ def db_get_review_of_customer(id: uuid.UUID, customer_id: uuid.UUID, db_session:
             )
         ).first()
         if db_review is None:
-            raise HTTPException(status_code=404, detail="Review not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Review not found")
         return db_review
 
 
@@ -64,4 +64,3 @@ def db_delete_review(id: uuid.UUID, customer_id: uuid.UUID):
         db_review = db_get_review_of_customer(id, customer_id, session)
         session.delete(db_review)
         session.commit()
-        return db_review

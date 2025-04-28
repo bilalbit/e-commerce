@@ -19,7 +19,7 @@ def update_user_profile(user_data: UsersUpdate,user:current_user_dependency):
     return db_update_profile(user_data,user["id"])
 
 
-@router.delete('/')
+@router.delete('/', status_code=status.HTTP_204_NO_CONTENT)
 def delete_account(user:current_user_dependency):
     return db_delete_account(user["id"])
 

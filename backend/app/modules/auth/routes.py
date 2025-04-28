@@ -15,11 +15,12 @@ router = APIRouter(
 )
 
 
-@router.post('/register')
+@router.post('/register', status_code=status.HTTP_201_CREATED)
 def register(user_data: UsersCreate):
     return db_register_user(user_data)
 
-@router.post('/register/{role}')
+
+@router.post('/register/{role}', status_code=status.HTTP_201_CREATED)
 def register_with_role(role: RoleType,
              user_data: UsersCreate,
              customer_data: CustomersCreate | None = None,

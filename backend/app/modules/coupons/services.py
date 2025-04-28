@@ -109,5 +109,3 @@ def db_apply_coupon(coupon_apply: CouponApply, customer_id: uuid.UUID):
         session.add(db_coupon)
         session.add(db_coupon_usage)
         session.commit()
-        session.refresh(db_coupon_usage)
-        return db_coupon_usage

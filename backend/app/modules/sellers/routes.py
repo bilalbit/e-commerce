@@ -16,7 +16,7 @@ def get_seller_info(user:current_user_dependency):
     return db_get_seller_info(user)
 
 
-@router.post('/')
+@router.post('/', status_code=status.HTTP_201_CREATED)
 def create_seller_info(seller_data: SellersUpdate, user: current_user_dependency):
     seller_only(user)
     return db_create_seller_info(user, seller_data)

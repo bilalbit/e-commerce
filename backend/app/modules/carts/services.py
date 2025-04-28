@@ -16,9 +16,9 @@ def db_get_or_create_cart(customer_id: uuid.UUID, db_session: Session):
     return db_cart
 
 
-def db_get_cart(id: uuid.UUID,db_session: Session = session):
+def db_get_cart(customer_id: uuid.UUID, db_session: Session = session):
     with db_session:
-        db_cart = db_get_or_create_cart(id, db_session)
+        db_cart = db_get_or_create_cart(customer_id, db_session)
         if db_cart.cart_items:
             return db_cart
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cart Items list is Empty")
@@ -49,8 +49,7 @@ def db_add_cart_item(customer_id: uuid.UUID, cart_item_data: CartsCreate):
                                   quantity=cart_item_data.quantity)
         session.add(cart_item)
         session.commit()
-        session.refresh(db_cart)
-        return db_cart
+        return db_get_cart(customer_id, session)
 
 
 def db_update_cart_item(cart_item_id: uuid.UUID, customer_id: uuid.UUID, cart_data: CartsUpdate):

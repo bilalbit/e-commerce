@@ -9,7 +9,8 @@ router = APIRouter(
     tags=["payments"],
 )
 
-@router.post('/')
+
+@router.post('/', status_code=status.HTTP_201_CREATED)
 def add_payment(payment_data: PaymentCreate,customer: current_customer_dependency):
     return db_add_payment(payment_data,customer.id)
 @router.get('/{id}')

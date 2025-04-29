@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     default_region:str
     number_format:str
 
+    ##supabase
+    supabase_url: str
+    supabase_key: str
+
     model_config = SettingsConfigDict(env_file="../../.env")
 
 # use this for getting .env configs

@@ -4,6 +4,8 @@ from enum import Enum
 from typing import Annotated, Literal
 
 from fastapi import Query
+from pydantic import UrlConstraints
+from pydantic_core import Url
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 from sqlmodel import Field, SQLModel
 
@@ -31,7 +33,9 @@ PhoneNumber = Annotated[
         number_format=get_settings().number_format
     )
 ]
-
+FileUrl = Annotated[
+    Url, UrlConstraints(allowed_schemes=["file"])
+]
 
 class RoleType(Enum):
     customer = "customer"

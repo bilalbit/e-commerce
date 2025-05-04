@@ -1,12 +1,13 @@
 from fastapi import HTTPException, status, UploadFile
 from sqlmodel import select, Session
 
+from backend.app.core.config import get_settings
 from backend.app.core.models import filter_query
 from backend.app.core.services import get_record_by_id
 from backend.app.database import session, supabase
 from .models import *
 
-bucket_name = "e-commerce"  # Your Supabase bucket name must be from.env
+bucket_name = get_settings().bucket_name  # Your Supabase bucket name must be from.env
 
 
 def db_add_product(product_data: ProductsCreate, seller_id: uuid.UUID):
@@ -79,7 +80,9 @@ def db_get_seller_product(product_id: uuid.UUID, seller_id: uuid.UUID, db_sessio
     return db_product
 
 
-async def db_add_product_image(product_id: uuid.UUID, product_image: UploadFile, is_primary: bool,
+async def db_add_product_image(product_id: uuid.UUID,
+                               product_image: UploadFile,
+                               is_primary: bool,
                                seller_id: uuid.UUID):
     with session:
         db_get_seller_product(product_id, seller_id, session)

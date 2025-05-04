@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     supabase_url: str
     supabase_key: str
 
+    bucket_name: str
     model_config = SettingsConfigDict(env_file="../../.env")
 
 # use this for getting .env configs
